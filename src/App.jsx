@@ -1,13 +1,14 @@
-import { useState } from "react";
+const { useState } = React;
 
-export default function App() {
-  const [task, setTask] = useState("");
+function App() {
   const [tasks, setTasks] = useState([]);
+  const [input, setInput] = useState("");
 
   const addTask = () => {
-    if (task.trim() === "") return;
-    setTasks([...tasks, { text: task, done: false }]);
-    setTask("");
+    if (input.trim() === "") return;
+
+    setTasks([...tasks, { text: input, done: false }]);
+    setInput("");
   };
 
   const toggleTask = (index) => {
@@ -21,14 +22,14 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-5">
-      <h1 className="text-2xl font-bold mb-4">To-Do List</h1>
+    <div className="max-w-md mx-auto mt-10 bg-white p-5 rounded shadow">
+      <h1 className="text-2xl font-bold mb-4 text-center">To-Do List</h1>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 mb-4">
         <input
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
-          className="border p-2 rounded"
+          className="flex-1 border p-2 rounded"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="Enter task..."
         />
         <button
@@ -39,28 +40,36 @@ export default function App() {
         </button>
       </div>
 
-      <ul className="mt-5 w-full max-w-md">
-        {tasks.map((t, i) => (
+      <ul>
+        {tasks.map((task, index) => (
           <li
-            key={i}
-            className="flex justify-between bg-white p-3 mt-2 rounded shadow"
+            key={index}
+            className="flex justify-between items-center mb-2 border p-2 rounded"
           >
-            <span
-              onClick={() => toggleTask(i)}
-              className={t.done ? "line-through text-gray-400" : ""}
-            >
-              {t.text}
+            <span className={task.done ? "line-through text-gray-500" : ""}>
+              {task.text}
             </span>
 
-            <button
-              onClick={() => deleteTask(i)}
-              className="text-red-500"
-            >
-              Delete
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => toggleTask(index)}
+                className="bg-green-500 text-white px-2 rounded"
+              >
+                {task.done ? "Undo" : "Done"}
+              </button>
+
+              <button
+                onClick={() => deleteTask(index)}
+                className="bg-red-500 text-white px-2 rounded"
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
     </div>
   );
 }
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
