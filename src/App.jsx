@@ -1,113 +1,67 @@
-import { useState } from "react"
+import { useState } from "react";
 
-function App() {
-  const [task, setTask] = useState("")
-  const [tasks, setTasks] = useState([])
+export default function App() {
+  const [task, setTask] = useState("");
+  const [list, setList] = useState([]);
 
   const addTask = () => {
-    if (task.trim() === "") {
-      return
-    }
-
-    setTasks([...tasks, { text: task, done: false }])
-    setTask("")
-  }
+    if (task.trim() === "") return;
+    setList([...list, { text: task, done: false }]);
+    setTask("");
+  };
 
   const toggleTask = (index) => {
-    const newTasks = [...tasks]
-    newTasks[index].done = !newTasks[index].done
-    setTasks(newTasks)
-  }
+    const newList = [...list];
+    newList[index].done = !newList[index].done;
+    setList(newList);
+  };
 
   const deleteTask = (index) => {
-    setTasks(tasks.filter((_, i) => i !== index))
-  }
-
-  const completedTasks = tasks.filter((item) => item.done).length
+    const newList = list.filter((_, i) => i !== index);
+    setList(newList);
+  };
 
   return (
-    <div className="min-h-screen bg-blue-50 p-6">
+    <div className="h-screen flex flex-col items-center bg-gray-200 p-5">
+      <h1 className="text-2xl font-bold mb-4">To-Do List</h1>
 
-      <div className="mx-auto max-w-lg rounded-2xl bg-white p-6 shadow-lg">
-
-        <h1 className="text-center text-3xl font-bold text-blue-600">
-          My To-Do List
-        </h1>
-
-        <p className="mt-2 text-center text-gray-500">
-          Organize your tasks and stay productive
-        </p>
-
-        <div className="mt-6 flex gap-2">
-
-          <input
-            type="text"
-            value={task}
-            onChange={(e) => setTask(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                addTask()
-              }
-            }}
-            placeholder="What do you need to do?"
-            className="flex-1 rounded-lg border border-gray-300 p-3 outline-none focus:border-blue-500"
-          />
-
-          <button
-            onClick={addTask}
-            className="rounded-lg bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700"
-          >
-            Add
-          </button>
-
-        </div>
-
-        <div className="mt-5 flex justify-between rounded-lg bg-blue-50 p-3 text-sm">
-          <span>Total Tasks: {tasks.length}</span>
-          <span>Completed: {completedTasks}</span>
-        </div>
-
-        <div className="mt-5 space-y-2">
-
-          {tasks.length === 0 ? (
-            <p className="py-8 text-center text-gray-400">
-              No tasks yet. Add your first task!
-            </p>
-          ) : (
-            tasks.map((item, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between rounded-lg bg-gray-100 p-3"
-              >
-
-                <button
-                  onClick={() => toggleTask(index)}
-                  className={`text-left ${
-                    item.done
-                      ? "text-gray-400 line-through"
-                      : "text-gray-800"
-                  }`}
-                >
-                  {item.text}
-                </button>
-
-                <button
-                  onClick={() => deleteTask(index)}
-                  className="rounded-md px-2 text-red-500 hover:bg-red-100"
-                >
-                  Delete
-                </button>
-
-              </div>
-            ))
-          )}
-
-        </div>
-
+      <div className="flex gap-2 mb-4">
+        <input
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+          className="p-2 border"
+          placeholder="Enter task..."
+        />
+        <button onClick={addTask} className="bg-blue-500 text-white px-3">
+          Add
+        </button>
       </div>
 
-    </div>
-  )
-}
+      <div className="w-full max-w-sm">
+        {list.map((item, index) => (
+          <div key={index} className="flex justify-between items-center bg-white p-2 mb-2 shadow">
+            <span className={item.done ? "line-through text-gray-400" : ""}>
+              {item.text}
+            </span>
 
-export default App
+            <div className="flex gap-2">
+              <button
+                onClick={() => toggleTask(index)}
+                className="bg-green-400 px-2"
+              >
+                {item.done ? "Undo" : "Done"}
+              </button>
+
+              <button
+                onClick={() => deleteTask(index)}
+                className="bg-red-400 px-2"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
