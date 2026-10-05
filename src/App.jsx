@@ -1,49 +1,66 @@
 import { useState } from "react";
 
 export default function App() {
-  const [input, setInput] = useState("");
+  const [task, setTask] = useState("");
+  const [list, setList] = useState([]);
 
-  const handleClick = (value) => {
-    setInput(input + value);
+  const addTask = () => {
+    if (task.trim() === "") return;
+    setList([...list, { text: task, done: false }]);
+    setTask("");
   };
 
-  const calculate = () => {
-    try {
-      setInput(eval(input).toString());
-    } catch {
-      setInput("Error");
-    }
+  const toggleTask = (index) => {
+    const newList = [...list];
+    newList[index].done = !newList[index].done;
+    setList(newList);
   };
 
-  const clear = () => {
-    setInput("");
+  const deleteTask = (index) => {
+    const newList = list.filter((_, i) => i !== index);
+    setList(newList);
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-200">
-      <div className="bg-white p-5 rounded shadow w-64">
-        <h1 className="text-center text-xl mb-2">Calculator</h1>
+    <div className="h-screen flex flex-col items-center bg-gray-200 p-5">
+      <h1 className="text-2xl font-bold mb-4">To-Do List</h1>
 
+      <div className="flex gap-2 mb-4">
         <input
-          className="w-full p-2 mb-3 border text-right"
-          value={input}
-          readOnly
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+          className="p-2 border"
+          placeholder="Enter task..."
         />
+        <button onClick={addTask} className="bg-blue-500 text-white px-3">
+          Add
+        </button>
+      </div>
 
-        <div className="grid grid-cols-4 gap-2">
-          {"1234567890+-*/".split("").map((item) => (
-            <button
-              key={item}
-              onClick={() => handleClick(item)}
-              className="p-2 bg-blue-400 text-white rounded"
-            >
-              {item}
-            </button>
-          ))}
+      <div className="w-full max-w-sm">
+        {list.map((item, index) => (
+          <div key={index} className="flex justify-between items-center bg-white p-2 mb-2 shadow">
+            <span className={item.done ? "line-through text-gray-400" : ""}>
+              {item.text}
+            </span>
 
-          <button onClick={clear} className="bg-red-400 p-2 col-span-2 rounded">C</button>
-          <button onClick={calculate} className="bg-green-400 p-2 col-span-2 rounded">=</button>
-        </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => toggleTask(index)}
+                className="bg-green-400 px-2"
+              >
+                {item.done ? "Undo" : "Done"}
+              </button>
+
+              <button
+                onClick={() => deleteTask(index)}
+                className="bg-red-400 px-2"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
