@@ -1,75 +1,50 @@
-const { useState } = React;
+import { useState } from "react";
 
-function App() {
-  const [tasks, setTasks] = useState([]);
+export default function App() {
   const [input, setInput] = useState("");
 
-  const addTask = () => {
-    if (input.trim() === "") return;
+  const handleClick = (value) => {
+    setInput(input + value);
+  };
 
-    setTasks([...tasks, { text: input, done: false }]);
+  const calculate = () => {
+    try {
+      setInput(eval(input).toString());
+    } catch {
+      setInput("Error");
+    }
+  };
+
+  const clear = () => {
     setInput("");
   };
 
-  const toggleTask = (index) => {
-    const newTasks = [...tasks];
-    newTasks[index].done = !newTasks[index].done;
-    setTasks(newTasks);
-  };
-
-  const deleteTask = (index) => {
-    setTasks(tasks.filter((_, i) => i !== index));
-  };
-
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-5 rounded shadow">
-      <h1 className="text-2xl font-bold mb-4 text-center">To-Do List</h1>
+    <div className="h-screen flex items-center justify-center bg-gray-200">
+      <div className="bg-white p-5 rounded shadow w-64">
+        <h1 className="text-center text-xl mb-2">Calculator</h1>
 
-      <div className="flex gap-2 mb-4">
         <input
-          className="flex-1 border p-2 rounded"
+          className="w-full p-2 mb-3 border text-right"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter task..."
+          readOnly
         />
-        <button
-          onClick={addTask}
-          className="bg-blue-500 text-white px-4 rounded"
-        >
-          Add
-        </button>
+
+        <div className="grid grid-cols-4 gap-2">
+          {"1234567890+-*/".split("").map((item) => (
+            <button
+              key={item}
+              onClick={() => handleClick(item)}
+              className="p-2 bg-blue-400 text-white rounded"
+            >
+              {item}
+            </button>
+          ))}
+
+          <button onClick={clear} className="bg-red-400 p-2 col-span-2 rounded">C</button>
+          <button onClick={calculate} className="bg-green-400 p-2 col-span-2 rounded">=</button>
+        </div>
       </div>
-
-      <ul>
-        {tasks.map((task, index) => (
-          <li
-            key={index}
-            className="flex justify-between items-center mb-2 border p-2 rounded"
-          >
-            <span className={task.done ? "line-through text-gray-500" : ""}>
-              {task.text}
-            </span>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => toggleTask(index)}
-                className="bg-green-500 text-white px-2 rounded"
-              >
-                {task.done ? "Undo" : "Done"}
-              </button>
-
-              <button
-                onClick={() => deleteTask(index)}
-                className="bg-red-500 text-white px-2 rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
